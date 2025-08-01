@@ -1,0 +1,123 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SMS Messages Schema",
+  "type": "object",
+  "properties": {
+    "conversations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "conversation_id": {
+            "type": "string",
+            "description": "Unique identifier for the conversation"
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "phone_number": {
+                  "type": "string",
+                  "pattern": "^\\+?[1-9]\\d{1,14}$"
+                },
+                "contact_name": {
+                  "type": "string",
+                  "description": "Name of the contact, if available"
+                }
+              },
+              "required": ["phone_number"]
+            },
+            "minItems": 1
+          },
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Unique identifier for the message"
+                },
+                "sender_phone": {
+                  "type": "string",
+                  "pattern": "^\\+?[1-9]\\d{1,14}$",
+                  "description": "Phone number of the sender"
+                },
+                "is_from_user": {
+                  "type": "boolean",
+                  "description": "True if message is from the user, false if received"
+                },
+                "content": {
+                  "type": "string",
+                  "description": "Message content"
+                },
+                "timestamp": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "When the message was sent/received"
+                },
+                "message_type": {
+                  "type": "string",
+                  "enum": ["text", "image", "video", "audio", "location", "contact", "other"]
+                },
+                "delivery_status": {
+                  "type": "string",
+                  "enum": ["sent", "delivered", "read", "failed"]
+                },
+                "attachments": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": ["image", "video", "audio", "document", "location", "contact"]
+                      },
+                      "filename": {
+                        "type": "string"
+                      },
+                      "size_bytes": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "mime_type": {
+                        "type": "string"
+                      }
+                    },
+                    "required": ["type"]
+                  }
+                },
+                "read_receipt": {
+                  "type": "boolean",
+                  "description": "Whether read receipt was requested/sent"
+                },
+                "group_info": {
+                  "type": "object",
+                  "properties": {
+                    "is_group": {
+                      "type": "boolean"
+                    },
+                    "group_name": {
+                      "type": "string"
+                    },
+                    "group_id": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["is_group"]
+                }
+              },
+              "required": ["id", "sender_phone", "is_from_user", "content", "timestamp", "message_type", "delivery_status"],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": ["conversation_id", "participants", "messages"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["conversations"],
+  "additionalProperties": false
+}

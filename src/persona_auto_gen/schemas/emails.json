@@ -1,0 +1,182 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Emails Schema",
+  "type": "object",
+  "properties": {
+    "emails": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the email"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Email subject line"
+          },
+          "from": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "format": "email"
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": ["email"]
+          },
+          "to": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": ["email"]
+            },
+            "minItems": 1
+          },
+          "cc": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": ["email"]
+            }
+          },
+          "bcc": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": ["email"]
+            }
+          },
+          "body": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string",
+                "description": "Plain text version of the email body"
+              },
+              "html": {
+                "type": "string",
+                "description": "HTML version of the email body"
+              }
+            },
+            "required": ["text"]
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the email was sent/received"
+          },
+          "is_sent": {
+            "type": "boolean",
+            "description": "True if sent by user, false if received"
+          },
+          "is_read": {
+            "type": "boolean",
+            "description": "Whether the email has been read"
+          },
+          "is_starred": {
+            "type": "boolean",
+            "description": "Whether the email is starred/flagged"
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["low", "normal", "high"]
+          },
+          "folder": {
+            "type": "string",
+            "description": "Email folder/mailbox",
+            "enum": ["inbox", "sent", "drafts", "trash", "spam", "archive", "custom"]
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Email labels or categories"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "filename": {
+                  "type": "string"
+                },
+                "size_bytes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "mime_type": {
+                  "type": "string"
+                },
+                "content_id": {
+                  "type": "string",
+                  "description": "Content ID for inline attachments"
+                }
+              },
+              "required": ["filename", "size_bytes", "mime_type"]
+            }
+          },
+          "thread_id": {
+            "type": "string",
+            "description": "Thread/conversation identifier"
+          },
+          "in_reply_to": {
+            "type": "string",
+            "description": "Message ID this email is replying to"
+          },
+          "references": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Message IDs referenced in the conversation"
+          },
+          "account": {
+            "type": "string",
+            "description": "Email account this message belongs to"
+          },
+          "category": {
+            "type": "string",
+            "enum": ["personal", "work", "promotional", "social", "updates", "forums", "other"]
+          }
+        },
+        "required": ["id", "subject", "from", "to", "body", "timestamp", "is_sent", "is_read", "folder", "account", "category"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["emails"],
+  "additionalProperties": false
+}

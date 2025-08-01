@@ -1,0 +1,224 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Wallet Schema",
+  "type": "object",
+  "properties": {
+    "passes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the pass"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["boarding_pass", "event_ticket", "coupon", "store_card", "membership", "transit", "payment_card", "id_card", "other"]
+          },
+          "organization_name": {
+            "type": "string",
+            "description": "Name of the organization that issued the pass"
+          },
+          "pass_name": {
+            "type": "string",
+            "description": "Display name of the pass"
+          },
+          "description": {
+            "type": "string",
+            "description": "Pass description"
+          },
+          "logo_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to the organization's logo"
+          },
+          "background_color": {
+            "type": "string",
+            "pattern": "^#[0-9A-Fa-f]{6}$",
+            "description": "Hex color code for pass background"
+          },
+          "foreground_color": {
+            "type": "string",
+            "pattern": "^#[0-9A-Fa-f]{6}$",
+            "description": "Hex color code for pass text"
+          },
+          "primary_fields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                },
+                "key": {
+                  "type": "string"
+                }
+              },
+              "required": ["label", "value", "key"]
+            },
+            "description": "Main information displayed on the pass"
+          },
+          "secondary_fields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                },
+                "key": {
+                  "type": "string"
+                }
+              },
+              "required": ["label", "value", "key"]
+            },
+            "description": "Additional information displayed on the pass"
+          },
+          "auxiliary_fields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                },
+                "key": {
+                  "type": "string"
+                }
+              },
+              "required": ["label", "value", "key"]
+            },
+            "description": "Supporting information on the pass"
+          },
+          "back_fields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                },
+                "key": {
+                  "type": "string"
+                }
+              },
+              "required": ["label", "value", "key"]
+            },
+            "description": "Information displayed on the back of the pass"
+          },
+          "barcode": {
+            "type": "object",
+            "properties": {
+              "format": {
+                "type": "string",
+                "enum": ["QR", "PDF417", "Aztec", "Code128"]
+              },
+              "message": {
+                "type": "string",
+                "description": "Data encoded in the barcode"
+              },
+              "message_encoding": {
+                "type": "string",
+                "enum": ["iso-8859-1", "utf-8"]
+              },
+              "alt_text": {
+                "type": "string",
+                "description": "Alternative text for accessibility"
+              }
+            },
+            "required": ["format", "message"]
+          },
+          "locations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "latitude": {
+                  "type": "number",
+                  "minimum": -90,
+                  "maximum": 90
+                },
+                "longitude": {
+                  "type": "number",
+                  "minimum": -180,
+                  "maximum": 180
+                },
+                "altitude": {
+                  "type": "number"
+                },
+                "relevant_text": {
+                  "type": "string",
+                  "description": "Text displayed when near this location"
+                }
+              },
+              "required": ["latitude", "longitude"]
+            },
+            "description": "Locations where this pass is relevant"
+          },
+          "relevant_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When this pass becomes relevant"
+          },
+          "expiration_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When this pass expires"
+          },
+          "voided": {
+            "type": "boolean",
+            "description": "Whether this pass has been voided"
+          },
+          "web_service_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL for pass updates"
+          },
+          "authentication_token": {
+            "type": "string",
+            "description": "Token for authenticating with web service"
+          },
+          "associated_store_identifiers": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "description": "App Store identifiers for associated apps"
+          },
+          "max_distance": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Maximum distance in meters for location relevance"
+          },
+          "created_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the pass was added to wallet"
+          },
+          "last_updated": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the pass was last updated"
+          }
+        },
+        "required": ["id", "type", "organization_name", "pass_name", "created_date"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["passes"],
+  "additionalProperties": false
+}

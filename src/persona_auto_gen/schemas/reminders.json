@@ -1,0 +1,179 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Reminders Schema",
+  "type": "object",
+  "properties": {
+    "reminders": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the reminder"
+          },
+          "title": {
+            "type": "string",
+            "description": "Reminder title/task"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Additional notes or description"
+          },
+          "completed": {
+            "type": "boolean",
+            "description": "Whether the reminder is completed"
+          },
+          "completion_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the reminder was completed"
+          },
+          "due_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the reminder is due"
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["low", "medium", "high"]
+          },
+          "list_name": {
+            "type": "string",
+            "description": "Name of the list this reminder belongs to"
+          },
+          "category": {
+            "type": "string",
+            "enum": ["personal", "work", "shopping", "health", "travel", "family", "finance", "other"]
+          },
+          "location_reminder": {
+            "type": "object",
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              },
+              "location": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "address": {
+                    "type": "string"
+                  },
+                  "latitude": {
+                    "type": "number",
+                    "minimum": -90,
+                    "maximum": 90
+                  },
+                  "longitude": {
+                    "type": "number",
+                    "minimum": -180,
+                    "maximum": 180
+                  }
+                },
+                "required": ["name"]
+              },
+              "trigger": {
+                "type": "string",
+                "enum": ["arriving", "leaving"]
+              },
+              "radius_meters": {
+                "type": "integer",
+                "minimum": 50,
+                "maximum": 5000
+              }
+            },
+            "required": ["enabled"]
+          },
+          "time_reminder": {
+            "type": "object",
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              },
+              "alert_times": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "repeat": {
+                "type": "object",
+                "properties": {
+                  "frequency": {
+                    "type": "string",
+                    "enum": ["never", "daily", "weekly", "monthly", "yearly"]
+                  },
+                  "interval": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "days_of_week": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+                    }
+                  },
+                  "end_date": {
+                    "type": "string",
+                    "format": "date"
+                  }
+                },
+                "required": ["frequency"]
+              }
+            },
+            "required": ["enabled"]
+          },
+          "subtasks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "completed": {
+                  "type": "boolean"
+                },
+                "completion_date": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "required": ["id", "title", "completed"]
+            }
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Associated URL"
+          },
+          "flagged": {
+            "type": "boolean",
+            "description": "Whether the reminder is flagged"
+          },
+          "created_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the reminder was created"
+          },
+          "modified_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the reminder was last modified"
+          }
+        },
+        "required": ["id", "title", "completed", "priority", "list_name", "category", "created_date"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["reminders"],
+  "additionalProperties": false
+}

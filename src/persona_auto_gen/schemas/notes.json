@@ -1,0 +1,200 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Notes Schema",
+  "type": "object",
+  "properties": {
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the note"
+          },
+          "title": {
+            "type": "string",
+            "description": "Note title"
+          },
+          "content": {
+            "type": "string",
+            "description": "Note content/body"
+          },
+          "folder": {
+            "type": "string",
+            "description": "Folder this note belongs to"
+          },
+          "category": {
+            "type": "string",
+            "enum": ["personal", "work", "ideas", "recipes", "travel", "shopping", "meeting", "journal", "other"]
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Tags associated with the note"
+          },
+          "created_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the note was created"
+          },
+          "modified_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the note was last modified"
+          },
+          "pinned": {
+            "type": "boolean",
+            "description": "Whether the note is pinned"
+          },
+          "locked": {
+            "type": "boolean",
+            "description": "Whether the note is password protected"
+          },
+          "shared": {
+            "type": "boolean",
+            "description": "Whether the note is shared with others"
+          },
+          "collaboration": {
+            "type": "object",
+            "properties": {
+              "shared_with": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "format": "email"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "permission": {
+                      "type": "string",
+                      "enum": ["view", "edit"]
+                    }
+                  },
+                  "required": ["email", "permission"]
+                }
+              },
+              "shared_date": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["image", "video", "audio", "document", "drawing", "checklist", "table", "link"]
+                },
+                "filename": {
+                  "type": "string"
+                },
+                "size_bytes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "mime_type": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "URL for link attachments"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Title for link attachments"
+                }
+              },
+              "required": ["type"]
+            }
+          },
+          "checklist": {
+            "type": "object",
+            "properties": {
+              "is_checklist": {
+                "type": "boolean"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "completed": {
+                      "type": "boolean"
+                    },
+                    "completion_date": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  },
+                  "required": ["id", "text", "completed"]
+                }
+              }
+            },
+            "required": ["is_checklist"]
+          },
+          "formatting": {
+            "type": "object",
+            "properties": {
+              "has_formatting": {
+                "type": "boolean"
+              },
+              "style": {
+                "type": "string",
+                "enum": ["plain", "rich_text", "markdown"]
+              },
+              "font_size": {
+                "type": "string",
+                "enum": ["small", "medium", "large", "extra_large"]
+              }
+            },
+            "required": ["has_formatting", "style"]
+          },
+          "location": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "latitude": {
+                "type": "number",
+                "minimum": -90,
+                "maximum": 90
+              },
+              "longitude": {
+                "type": "number",
+                "minimum": -180,
+                "maximum": 180
+              },
+              "captured_date": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "required": ["name"]
+          }
+        },
+        "required": ["id", "title", "content", "folder", "category", "created_date", "modified_date", "pinned", "locked", "shared"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["notes"],
+  "additionalProperties": false
+}

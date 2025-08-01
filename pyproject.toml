@@ -1,0 +1,42 @@
+[tool.poetry]
+name = "persona-auto-gen"
+version = "0.1.0"
+description = "AI agent for generating realistic iPhone app user data using LangGraph"
+authors = ["User <user@example.com>"]
+readme = "README.md"
+packages = [{include = "persona_auto_gen", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+langgraph = "^0.2.0"
+openai = "^1.0.0"
+pydantic = "^2.0.0"
+jsonschema = "^4.0.0"
+python-dateutil = "^2.8.0"
+faker = "^20.0.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.0.0"
+black = "^23.0.0"
+isort = "^5.0.0"
+mypy = "^1.0.0"
+pre-commit = "^3.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true

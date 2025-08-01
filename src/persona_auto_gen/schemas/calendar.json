@@ -1,0 +1,148 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Calendar Schema",
+  "type": "object",
+  "properties": {
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the event"
+          },
+          "title": {
+            "type": "string",
+            "description": "Event title"
+          },
+          "description": {
+            "type": "string",
+            "description": "Event description or notes"
+          },
+          "start_datetime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Event start date and time"
+          },
+          "end_datetime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Event end date and time"
+          },
+          "all_day": {
+            "type": "boolean",
+            "description": "Whether this is an all-day event"
+          },
+          "location": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Location name or address"
+              },
+              "latitude": {
+                "type": "number",
+                "minimum": -90,
+                "maximum": 90
+              },
+              "longitude": {
+                "type": "number",
+                "minimum": -180,
+                "maximum": 180
+              }
+            },
+            "required": ["name"]
+          },
+          "attendees": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["accepted", "declined", "tentative", "pending"]
+                }
+              },
+              "required": ["name", "email", "status"]
+            }
+          },
+          "calendar_name": {
+            "type": "string",
+            "description": "Name of the calendar this event belongs to"
+          },
+          "category": {
+            "type": "string",
+            "enum": ["work", "personal", "health", "travel", "social", "family", "education", "other"]
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["low", "normal", "high"]
+          },
+          "reminder": {
+            "type": "object",
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              },
+              "minutes_before": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": ["enabled"]
+          },
+          "recurrence": {
+            "type": "object",
+            "properties": {
+              "frequency": {
+                "type": "string",
+                "enum": ["daily", "weekly", "monthly", "yearly"]
+              },
+              "interval": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "Repeat every N frequency units"
+              },
+              "end_date": {
+                "type": "string",
+                "format": "date",
+                "description": "When the recurrence ends"
+              },
+              "days_of_week": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+                },
+                "description": "For weekly recurrence"
+              }
+            },
+            "required": ["frequency"]
+          },
+          "created_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the event was created"
+          },
+          "modified_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the event was last modified"
+          }
+        },
+        "required": ["id", "title", "start_datetime", "end_datetime", "all_day", "calendar_name", "category", "created_date"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["events"],
+  "additionalProperties": false
+}
