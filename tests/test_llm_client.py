@@ -97,8 +97,12 @@ class TestLLMClient:
         
         # Mock rate limit error then success
         from openai import RateLimitError
+        import httpx
+        mock_response = Mock(spec=httpx.Response)
+        mock_response.status_code = 429
+        mock_response.headers = {"x-request-id": "test-request-id"}
         mock_client.chat.completions.create.side_effect = [
-            RateLimitError("Rate limit exceeded", response=Mock(), body=None),
+            RateLimitError("Rate limit exceeded", response=mock_response, body=None),
             Mock(choices=[Mock(message=Mock(content="Success after retry"))])
         ]
         
@@ -120,8 +124,10 @@ class TestLLMClient:
         
         # Mock API error then success
         from openai import APIError
+        import httpx
+        mock_request = Mock(spec=httpx.Request)
         mock_client.chat.completions.create.side_effect = [
-            APIError("API error", response=Mock(), body=None),
+            APIError("API error", request=mock_request, body=None),
             Mock(choices=[Mock(message=Mock(content="Success after retry"))])
         ]
         
@@ -143,7 +149,9 @@ class TestLLMClient:
         
         # Mock consistent API errors
         from openai import APIError
-        mock_client.chat.completions.create.side_effect = APIError("Persistent error", response=Mock(), body=None)
+        import httpx
+        mock_request = Mock(spec=httpx.Request)
+        mock_client.chat.completions.create.side_effect = APIError("Persistent error", request=mock_request, body=None)
         
         # Create client and test
         llm_client = LLMClient(test_config)
@@ -258,11 +266,13 @@ class TestLLMClient:
         prompts = ["Prompt 1", "Prompt 2"]
         
         # Mock the generate method with one failure
-        def mock_generate(prompt):
+        def mock_generate(prompt, temperature=None, max_tokens=None):
             if prompt == "Prompt 1":
                 return "Response 1"
-            else:
+            elif prompt == "Prompt 2":
                 raise Exception("Generation failed")
+            else:
+                raise Exception(f"Unexpected prompt: {prompt}")
         
         with patch.object(llm_client, 'generate', side_effect=mock_generate):
             results = llm_client.generate_batch(prompts)

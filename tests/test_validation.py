@@ -229,12 +229,12 @@ class TestSchemaValidator:
         
         with patch.object(validator, '_load_schema', return_value=mock_schema):
             from jsonschema import ValidationError
-            with patch('jsonschema.validate', side_effect=ValidationError("'name' is required")):
+            with patch('jsonschema.validate', side_effect=ValidationError("'name' is a required property")):
                 result = validator.validate_single_entry("contacts", entry)
                 
                 assert not result["is_valid"]
                 assert len(result["errors"]) > 0
-                assert "'name' is required" in result["errors"][0]
+                assert "'name' is a required property" in result["errors"][0]
 
 
 class TestSchemaInfo:

@@ -1,6 +1,8 @@
 """Tests for main PersonaAgent functionality."""
 
 import pytest
+pytestmark = pytest.mark.asyncio
+
 from unittest.mock import Mock, patch
 
 from persona_auto_gen.main import PersonaAgent

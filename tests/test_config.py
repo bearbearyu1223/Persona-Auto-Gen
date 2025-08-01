@@ -3,7 +3,7 @@
 import pytest
 from datetime import datetime
 from pathlib import Path
-import tempfile
+from unittest.mock import patch
 
 from persona_auto_gen.config import Config, OpenAIModel, AppType
 
@@ -45,8 +45,9 @@ class TestConfig:
     
     def test_config_validation_missing_api_key(self):
         """Test config validation with missing API key."""
-        with pytest.raises(ValueError, match="OpenAI API key must be provided"):
-            Config()
+        with patch.dict('os.environ', {}, clear=True):
+            with pytest.raises(ValueError, match="OpenAI API key must be provided"):
+                Config()
     
     def test_config_validation_invalid_date_range(self, mock_openai_key):
         """Test config validation with invalid date range."""

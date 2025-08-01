@@ -102,71 +102,69 @@ class TestIntegrationWorkflow:
             mock_response = Mock()
             mock_choice = Mock()
             
-            # Determine response based on the prompt content
+            # Determine response based on the prompt content in any message
             messages = kwargs.get('messages', [])
-            if messages and len(messages) > 1:
-                user_content = messages[1].get('content', '').lower()
-                
-                if 'analyze' in user_content or 'profile' in user_content:
-                    # Profile analysis response
-                    mock_choice.message.content = json.dumps({
-                        "user_characteristics": {
-                            "lifestyle": "professional urban lifestyle",
-                            "communication_patterns": "frequent digital communication",
-                            "technology_usage": "high tech adoption",
-                            "social_connections": "maintains diverse professional and personal networks"
-                        },
-                        "event_analysis": {
-                            "event_types": ["work", "social", "personal"],
-                            "recurring_patterns": ["weekly meetings", "regular social activities"],
-                            "social_implications": ["strong professional network", "active social life"]
-                        },
-                        "app_usage_patterns": {
-                            "contacts": "well-organized contact management",
-                            "calendar": "structured scheduling with work-life balance"
-                        },
-                        "data_relationships": {
-                            "cross_app_connections": "contacts should align with calendar events"
-                        }
-                    })
-                
-                elif 'contacts' in user_content:
-                    # Contacts generation response
-                    mock_choice.message.content = json.dumps(mock_generated_data["contacts"])
-                
-                elif 'calendar' in user_content or 'events' in user_content:
-                    # Calendar generation response
-                    mock_choice.message.content = json.dumps(mock_generated_data["calendar"])
-                
-                elif 'evaluate' in user_content or 'quality' in user_content:
-                    # Reflection response
-                    mock_choice.message.content = json.dumps({
-                        "overall_quality": "good",
-                        "realism_score": 8,
-                        "diversity_score": 7,
-                        "coherence_score": 8,
-                        "strengths": [
-                            "Realistic contact names and relationships",
-                            "Logical calendar event scheduling",
-                            "Good cross-app consistency"
-                        ],
-                        "weaknesses": [
-                            "Could include more diverse event types",
-                            "Limited geographic variety in contacts"
-                        ],
-                        "cross_app_consistency": "good",
-                        "temporal_consistency": "excellent",
-                        "character_consistency": "good",
-                        "recommendations": [
-                            "Add more variety in contact locations",
-                            "Include recurring calendar events"
-                        ],
-                        "critical_issues": []
-                    })
-                
-                else:
-                    # Default response
-                    mock_choice.message.content = json.dumps({"status": "ok"})
+            all_content = ""
+            for message in messages:
+                content = message.get('content', '')
+                all_content += content.lower() + " "
+            
+            if 'evaluate the quality and realism' in all_content or 'quality assessment' in all_content:
+                # Reflection response
+                mock_choice.message.content = json.dumps({
+                    "overall_quality": "good",
+                    "realism_score": 8,
+                    "diversity_score": 7,
+                    "coherence_score": 8,
+                    "strengths": [
+                        "Realistic contact names and relationships",
+                        "Logical calendar event scheduling",
+                        "Good cross-app consistency"
+                    ],
+                    "weaknesses": [
+                        "Could include more diverse event types",
+                        "Limited geographic variety in contacts"
+                    ],
+                    "cross_app_consistency": "good",
+                    "temporal_consistency": "excellent",
+                    "character_consistency": "good",
+                    "recommendations": [
+                        "Add more variety in contact locations",
+                        "Include recurring calendar events"
+                    ],
+                    "critical_issues": []
+                })
+            elif 'analyze' in all_content or 'profile' in all_content:
+                # Profile analysis response
+                mock_choice.message.content = json.dumps({
+                    "user_characteristics": {
+                        "lifestyle": "professional urban lifestyle",
+                        "communication_patterns": "frequent digital communication",
+                        "technology_usage": "high tech adoption",
+                        "social_connections": "maintains diverse professional and personal networks"
+                    },
+                    "event_analysis": {
+                        "event_types": ["work", "social", "personal"],
+                        "recurring_patterns": ["weekly meetings", "regular social activities"],
+                        "social_implications": ["strong professional network", "active social life"]
+                    },
+                    "app_usage_patterns": {
+                        "contacts": "well-organized contact management",
+                        "calendar": "structured scheduling with work-life balance"
+                    },
+                    "data_relationships": {
+                        "cross_app_connections": "contacts should align with calendar events"
+                    }
+                })
+            elif 'contacts' in all_content:
+                # Contacts generation response
+                mock_choice.message.content = json.dumps(mock_generated_data["contacts"])
+            elif 'calendar' in all_content or 'events' in all_content:
+                # Calendar generation response
+                mock_choice.message.content = json.dumps(mock_generated_data["calendar"])
+            else:
+                # Default response
+                mock_choice.message.content = json.dumps({"status": "ok"})
             
             mock_response.choices = [mock_choice]
             return mock_response
@@ -273,7 +271,9 @@ class TestIntegrationWorkflow:
             
             if call_count <= 2:  # First two calls fail
                 from openai import APIError
-                raise APIError("API temporarily unavailable", response=Mock(), body=None)
+                import httpx
+                mock_request = Mock(spec=httpx.Request)
+                raise APIError("API temporarily unavailable", request=mock_request, body=None)
             else:  # Subsequent calls succeed
                 mock_response = Mock()
                 mock_choice = Mock()
@@ -325,6 +325,7 @@ class TestIntegrationWorkflow:
             contacts = result["generated_data"]["contacts"].get("contacts", [])
             assert len(contacts) > 0
     
+    @pytest.mark.asyncio
     async def test_async_workflow(self, integration_config, sample_user_profile, sample_events):
         """Test the async workflow."""
         
